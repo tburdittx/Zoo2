@@ -10,42 +10,47 @@ using Zoo.BusinessLogic.Services;
 
 namespace Zoo.ConsoleApp
 {
-  public static class Program
-  {
-    public static void Main()
+    public static class Program
     {
-      var largeAnimals = new ILargeAnimal[]
-      {
+        public static void Main()
+        {
+            var largeAnimals = new ILargeAnimal[]
+            {
         new Lion(new DateTime(2010, 4, 28)),
         new Lion(new DateTime(2012, 5, 11)),
         new Zebra(new DateTime(2008, 12, 1))
-      };
-      var smallAnimals = new ISmallAnimal[] {
+            };
+            var smallAnimals = new ISmallAnimal[] {
         new Rabbit(new DateTime(2014, 1, 1)),
       };
-      var animals = largeAnimals.Union<IAnimal>(smallAnimals).ToList();
+            var animals = largeAnimals.Union<IAnimal>(smallAnimals).ToList();
 
-      var largeAnimalKeeper = new Keeper<ILargeAnimal>(largeAnimals);
-      var smallAnimalKeeper = new Keeper<ISmallAnimal>(smallAnimals);
+            var largeAnimalKeeper = new Keeper<ILargeAnimal>(largeAnimals);
+            var smallAnimalKeeper = new Keeper<ISmallAnimal>(smallAnimals);
 
-      var keepers = new IKeeper[]
-      {
+            var keepers = new IKeeper[]
+            {
         largeAnimalKeeper,
-        smallAnimalKeeper 
-      };
+        smallAnimalKeeper
+            };
 
-      var babyRabbit = new Rabbit(DateTime.Today);
-      smallAnimalKeeper.StartLookingAfter(babyRabbit);
+            var babyRabbit = new Rabbit(DateTime.Today);
+            smallAnimalKeeper.StartLookingAfter(babyRabbit);
 
-      var feedingScheduler = FeedingScheduler.Instance;
-      var groomingScheduler = GroomingScheduler.Instance;
+            var feedingScheduler = FeedingScheduler.Instance;
+            var groomingScheduler = GroomingScheduler.Instance;
+            var muckingScheduler = MuckingScheduler.Instance;
 
-      var timer = new ZooTimer();
-      new Thread(timer.Run).Start();
+            var timer = new ZooTimer();
+            new Thread(timer.Run).Start();
 
-      timer.Tick += () => feedingScheduler.AssignFeedingJobs(keepers, animals);
-      timer.Tick += () => groomingScheduler.AssignGroomingJobs(keepers, animals);
-      timer.Tick += () => animals.ForEach(Console.WriteLine);
+            timer.Tick += () => feedingScheduler.AssignFeedingJobs(keepers, animals);
+            timer.Tick += () => groomingScheduler.AssignGroomingJobs(keepers, animals);
+            timer.Tick += () => muckingScheduler.AssignMuckingJobs(keepers, animals);
+
+            timer.Tick += () => animals.ForEach(Console.WriteLine );
+
+           
+        }
     }
-  }
 }

@@ -3,5 +3,7 @@
   static class Config
   {
     public const int FeedingFrequency = 2;
+        public const int GroomingFrequency = 4;
+        public const int MuckFrequency = 5;
   }
 }
